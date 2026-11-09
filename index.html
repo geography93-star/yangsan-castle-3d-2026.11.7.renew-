@@ -44,6 +44,18 @@ button{margin-top:10px;margin-right:6px;padding:5px 10px;border:1px solid var(--
  display:flex;gap:5px;align-items:center;font-size:12px;flex-wrap:wrap;justify-content:center;max-width:94vw}
 #tour span{color:var(--mute);margin-right:2px}
 #tour button{margin:0;padding:4px 8px;font-size:12px}
+#tour{transition:opacity .22s ease,transform .22s ease,visibility 0s linear 0s}
+#tour.hid{opacity:0;visibility:hidden;pointer-events:none;transform:translateX(-50%) translate(-28vw,60px) scale(.6);transition:opacity .22s ease,transform .22s ease,visibility 0s linear .22s}
+#tour #tourx{position:absolute;right:-9px;top:-11px;width:28px;height:28px;padding:0;border:none;border-radius:50%;
+ background:var(--panel);color:var(--mute);box-shadow:0 1px 6px rgba(0,0,0,.28);display:grid;place-items:center}
+#tour #tourx::before{content:"";position:absolute;inset:-8px}
+#tour #tourx svg{width:14px;height:14px;display:block}
+#tourc{position:absolute;left:12px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:5;margin:0;height:42px;padding:0 14px 0 12px;
+ border:none;border-radius:999px;background:var(--panel);color:var(--ink);font-size:13.5px;font-weight:600;
+ box-shadow:0 2px 12px rgba(0,0,0,.25);display:none;align-items:center;gap:6px;animation:popin .22s ease-out}
+#tourc svg{width:14px;height:14px;color:var(--acc)}
+#tourc.on{display:inline-flex}
+@media (min-width:761px){#tourc{left:50%;transform:translateX(-50%);bottom:calc(74px + env(safe-area-inset-bottom,0px));animation:none}#tour.hid{transform:translateX(-50%) translateY(30px) scale(.6)}}
 #src{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(520px,92vw);max-height:84vh;overflow:auto;
  background:var(--panel);border-radius:12px;padding:16px 18px;box-shadow:0 6px 30px rgba(0,0,0,.35);display:none;font-size:13px;z-index:9;line-height:1.6}
 #src ul{padding-left:18px;margin:8px 0}#src li{margin-bottom:6px}
@@ -99,7 +111,7 @@ button{margin-top:10px;margin-right:6px;padding:5px 10px;border:1px solid var(--
 <div id="pop" role="dialog" aria-labelledby="popt"><button id="popx" aria-label="설명 닫기">×</button><h2 id="popt"></h2><div class="dist"><span>현 위치에서 직선 <b id="popd"></b></span><span id="popw"></span></div><img id="popi" class="ph-img" alt="" title="누르면 크게 보기"><div class="ph-cap" id="popc"></div><p id="popb"></p><div class="tip">× 를 누르면 설명이 닫히고, 빨간 선으로 3D 거리가 계속 표시됩니다.</div></div>
 <div id="lb" role="dialog" aria-label="사진 크게 보기"><img id="lbi" alt=""><b id="lbt"></b></div>
 <div id="exg">지형 높이 과장 <b id="exgv">2×</b> — 실제 비율 아님</div>
-<div id="tour"><span>안내</span><button data-g="북문">북문</button><button data-g="객사">객사</button><button data-g="동헌">동헌</button><button data-g="동문">동문</button><button data-g="서문">서문</button><button data-g="홍전문">홍전문</button><button data-g="양산읍성 잔존성곽 유적지">잔존성곽</button></div>
+<div id="tour"><span>안내</span><button data-g="북문">북문</button><button data-g="객사">객사</button><button data-g="동헌">동헌</button><button data-g="동문">동문</button><button data-g="서문">서문</button><button data-g="홍전문">홍전문</button><button data-g="양산읍성 잔존성곽 유적지">잔존성곽</button><button id="tourx" aria-label="안내 패널 숨기기" title="숨기기"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 5.5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><button id="tourc" aria-label="안내 패널 열기"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 8.5l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>안내</button>
 <div id="src"><b>자료와 복원 근거</b>
 <ul><li><b>기본 문헌</b> — 장혜진(2007), 「조선시대 양산의 읍치경관 연구」, 경상대학교 교육대학원 지리교육전공 석사학위논문. 성문 추정지(그림 39), 지적도·지적원도 중첩 지도(그림 43), 성내 경관(그림 52)을 참고했습니다.</li>
 <li><b>성곽선</b> — <b>1912년 제작 지적원도</b>와 위 논문 도판(그림 39·43·52)을 QGIS에서 지오레퍼런싱해 추적. 기본선은 그림 39 안.</li>
@@ -1626,7 +1638,7 @@ const TOURTX={'북문':'읍성의 북쪽 문. 현 북부동 큰길과 만나는 
  '서문':'서쪽 문. 성 밖으로 평야와 양산천이 펼쳐진다. 북·동·서 세 문루의 형태는 확인되지 않은 추정이다.',
  '양산읍성 잔존성곽 유적지':'지안스로가 아파트 남쪽, 성벽 추정선 바로 옆에 있는 양산읍성의 잔존 성곽 유적지입니다. 사진을 누르면 크게 볼 수 있습니다.',
  '홍전문':'남쪽 통로. 『양산군읍지』에는 성문이 북문·동문·서문 3곳뿐이고, 홍전문(紅箭門)을 세운 곳을 성 밖에서 남문이라 불렀다고 적혀 있다. 축성 뒤 자주 드나들던 통로가 남문으로 불린 것으로 보인다. 홍전문(홍살문)의 모습은 추정이다.'};
-document.querySelectorAll('#tour button').forEach(btn=>{btn.onclick=()=>{
+document.querySelectorAll('#tour button[data-g]').forEach(btn=>{btn.onclick=()=>{
  const nm=btn.dataset.g,o=picks.find(p=>p.userData.nm===nm);if(!o)return;
  showDist(o);openPop(o);
  const y=gh({x:o.userData.x,z:o.userData.z});
@@ -1636,6 +1648,11 @@ document.querySelectorAll('#tour button').forEach(btn=>{btn.onclick=()=>{
  let px=-(oz-hz)/dd,pz=(ox-hx)/dd;if(pz<0){px=-px;pz=-pz}
  const AK=Math.min(2.2,Math.max(1,1/(cam.aspect*1.15))),R0=(dd*1.2+90)*AK;setMode('free');
  FLY={p0:cam.position.clone(),t0:ctl.target.clone(),p1:new THREE.Vector3(mx+px*R0,my+(dd*.75+60)*AK,mz+pz*R0),t1:new THREE.Vector3(mx,my+6,mz),s:performance.now(),d:1100}}});
+/* 안내 패널 숨기기: 접으면 왼쪽 아래 '안내' 버튼만 남음 */
+{const tp=document.getElementById('tour'),tx=document.getElementById('tourx'),tc=document.getElementById('tourc');
+ const setTour=h=>{tp.classList.toggle('hid',h);tc.classList.toggle('on',h);tp.setAttribute('aria-hidden',h?'true':'false');try{sessionStorage.setItem('ysTourHid',h?'1':'0')}catch(e){}};
+ let h0=false;try{h0=sessionStorage.getItem('ysTourHid')==='1'}catch(e){}
+ setTour(h0);tx.onclick=e=>{e.preventDefault();setTour(true)};tc.onclick=e=>{e.preventDefault();setTour(false)};}
 o12.checked=!LITE;
 {const coarse=matchMedia&&matchMedia('(pointer:coarse)').matches;
  hint.textContent=coarse?'한 손가락: 회전 · 두 손가락: 확대/이동 · 문·객사·동헌·잔존성곽을 탭하면 거리·설명 표시'
@@ -1656,7 +1673,7 @@ o6.oninput=()=>{v6.textContent=o6.value+' m';buildSoon()};o6.onchange=buildNow;
 /* 설정 항목(슬라이더·체크박스)을 조작하는 중에는 지도 이동 단축키를 받지 않음 */
 const isCtl=t=>!!(t&&t.closest&&t.closest('input,select,textarea,#src'));
 const keys={};addEventListener('keydown',e=>{if(isCtl(e.target))return;keys[e.code]=1});addEventListener('keyup',e=>{keys[e.code]=0});addEventListener('blur',()=>{for(const k in keys)keys[k]=0});
-addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('#p,#src,#tour,#info,#pop,#lb'))return;window.focus();cv.focus()},true);
+addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('#p,#src,#tour,#tourc,#info,#pop,#lb'))return;window.focus();cv.focus()},true);
 document.querySelectorAll('#pad button').forEach(b=>{const k=b.dataset.k;b.onpointerdown=e=>{e.preventDefault();keys[k]=1};['onpointerup','onpointerleave','onpointercancel'].forEach(n=>b[n]=()=>{keys[k]=0})});
 let zd=0;function zoomBy(f){const d=cam.position.clone().sub(ctl.target);cam.position.copy(ctl.target).add(d.setLength(THREE.MathUtils.clamp(d.length()*f,ctl.minDistance,6000)))}
 [['zi',1],['zo',-1]].forEach(([id,v])=>{const b=$(id);b.onpointerdown=e=>{e.preventDefault();zoomBy(v>0?.85:1.18);zd=v};['onpointerup','onpointerleave','onpointercancel'].forEach(n=>b[n]=()=>{zd=0})});
